@@ -1,16 +1,16 @@
-"""Test module for gac.utils."""
+"""Test module for ucl.utils."""
 
 import subprocess
 import unittest
 from unittest.mock import MagicMock, patch
 
-from gac.utils import run_subprocess
+from ucl.utils import run_subprocess
 
 
 class TestUtils(unittest.TestCase):
     """Tests for utility functions."""
 
-    @patch("gac.utils.subprocess.run")
+    @patch("ucl.utils.subprocess.run")
     def test_run_subprocess_success(self, mock_run):
         """Test run_subprocess when command succeeds."""
         # Mock subprocess.run to return a success result
@@ -33,7 +33,7 @@ class TestUtils(unittest.TestCase):
         # Assert result matches mock stdout
         self.assertEqual(result, "Command output")
 
-    @patch("gac.utils.subprocess.run")
+    @patch("ucl.utils.subprocess.run")
     def test_run_subprocess_empty_output(self, mock_run):
         """Test run_subprocess when command succeeds with empty output."""
         # Mock subprocess.run to return a success result with empty output
@@ -48,7 +48,7 @@ class TestUtils(unittest.TestCase):
         # Assert result is empty string
         self.assertEqual(result, "")
 
-    @patch("gac.utils.subprocess.run")
+    @patch("ucl.utils.subprocess.run")
     def test_run_subprocess_failure(self, mock_run):
         """Test run_subprocess when command fails."""
         # Mock subprocess.run to return a failure result

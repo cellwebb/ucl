@@ -32,7 +32,7 @@ from typing import List, Tuple
 import click
 from rich.logging import RichHandler
 
-from gac.ai_utils import chat, count_tokens
+from ucl.ai_utils import chat, count_tokens
 
 logger = logging.getLogger(__name__)
 

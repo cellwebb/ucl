@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Examples of using GAC with multiple AI providers.
+Examples of using UCL with multiple AI providers.
 
-This script demonstrates how to use different providers with GAC through:
+This script demonstrates how to use different providers with UCL through:
 1. Environment variables
-2. Command-line options
-3. Direct API calls
+2. Command line arguments
+3. Direct Python API usage
 
 Run this script to see examples of different providers in action.
 """
@@ -20,8 +20,8 @@ from dotenv import load_dotenv
 # Add the src directory to the Python path for direct imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from gac.config import PROVIDER_MODELS, get_config  # noqa: E402
-from gac.utils import chat, count_tokens  # noqa: E402
+from ucl.config import PROVIDER_MODELS, get_config  # noqa: E402
+from ucl.utils import chat, count_tokens  # noqa: E402
 
 # Load environment variables from .env file if it exists
 load_dotenv()
@@ -76,13 +76,13 @@ def demonstrate_environment_variables(provider: str) -> None:
     display_header(f"Setting Provider via Environment Variables ({provider})")
 
     # Set environment variables
-    os.environ["GAC_PROVIDER"] = provider
+    os.environ["UCL_PROVIDER"] = provider
 
     # Get config to see the effect
     config = get_config()
 
     # Display configuration
-    print(f"Environment Variable: GAC_PROVIDER={provider}")
+    print(f"Environment Variable: UCL_PROVIDER={provider}")
     print(f"Resulting model: {config['model']}")
 
 
@@ -92,10 +92,10 @@ def demonstrate_command_line() -> None:
 
     # List of examples to show
     examples = [
-        "gac -m anthropic:claude-3-5-haiku",
-        "gac -m openai:gpt-4o-mini",
-        "gac -m groq:gemma-7b-it",
-        "gac -m mistral:mistral-small-latest",
+        "ucl -m anthropic:claude-3-5-haiku",
+        "ucl -m openai:gpt-4o-mini",
+        "ucl -m groq:gemma-7b-it",
+        "ucl -m mistral:mistral-small-latest",
     ]
 
     for example in examples:
@@ -147,9 +147,9 @@ def demonstrate_direct_api_call(provider: str) -> None:
         print(f"Error making API call: {e}")
 
 
-def run_gac_example(provider: str) -> None:
-    """Run GAC from command line with a specific provider."""
-    display_header(f"Running GAC Command Line with {provider}")
+def run_ucl_example(provider: str) -> None:
+    """Run UCL from command line with a specific provider."""
+    display_header(f"Running UCL Command Line with {provider}")
 
     # Check if in a git repository
     try:
@@ -164,22 +164,22 @@ def run_gac_example(provider: str) -> None:
     model = f"{provider}:{PROVIDER_MODELS[provider]}"
 
     # Show command
-    command = f"gac -t -m {model}"
+    command = f"ucl -t -m {model}"
     print(f"Command: {command}")
 
-    # Execute GAC in test mode
-    print("\nRunning GAC in test mode...")
+    # Execute UCL in test mode
+    print("\nRunning UCL in test mode...")
     try:
-        subprocess.run(["gac", "-t", "-m", model], check=True)
+        subprocess.run(["ucl", "-t", "-m", model], check=True)
     except subprocess.CalledProcessError as e:
-        print(f"Error running GAC: {e}")
+        print(f"Error running UCL: {e}")
     except FileNotFoundError:
-        print("GAC command not found. Make sure GAC is installed and in your PATH.")
+        print("UCL command not found. Make sure UCL is installed and in your PATH.")
 
 
 def main() -> None:
     """Run all examples."""
-    print("GAC Multi-Provider Examples")
+    print("UCL Multi-Provider Examples")
     print("==========================")
 
     # Show available providers
@@ -219,8 +219,8 @@ def main() -> None:
         except ValueError:
             print("Invalid choice.")
 
-    # Ask if user wants to run GAC command-line example
-    response = input("\nDo you want to run GAC from the command line? (y/n): ")
+    # Ask if user wants to run UCL command-line example
+    response = input("\nDo you want to run UCL from the command line? (y/n): ")
     if response.lower().startswith("y"):
         # Let user select a provider
         for i, provider in enumerate(available_providers):
@@ -230,7 +230,7 @@ def main() -> None:
         try:
             provider_index = int(choice) - 1
             if 0 <= provider_index < len(available_providers):
-                run_gac_example(available_providers[provider_index])
+                run_ucl_example(available_providers[provider_index])
         except ValueError:
             print("Invalid choice.")
 

@@ -1,4 +1,4 @@
-"""Configuration settings for gac."""
+"""Configuration settings for ucl."""
 
 import logging
 import os
@@ -6,7 +6,7 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-# Default provider models - used when GAC_PROVIDER is set without GAC_MODEL_NAME
+# Default provider models - used when UCL_PROVIDER is set without UCL_MODEL_NAME
 PROVIDER_MODELS = {
     "anthropic": "claude-3-5-haiku-latest",
     "openai": "gpt-4o-mini",
@@ -30,9 +30,9 @@ def get_config() -> Dict[str, Any]:
     Load configuration from environment variables or use defaults.
 
     The function checks for:
-    - GAC_MODEL: Fully qualified model ID (provider:model)
-    - GAC_USE_FORMATTING: Whether to format Python files
-    - GAC_MAX_TOKENS: Maximum output tokens
+    - UCL_MODEL: Fully qualified model ID (provider:model)
+    - UCL_USE_FORMATTING: Whether to format Python files
+    - UCL_MAX_TOKENS: Maximum output tokens
 
     Returns:
         Dict: The configuration dictionary
@@ -40,39 +40,40 @@ def get_config() -> Dict[str, Any]:
     config = DEFAULT_CONFIG.copy()
 
     # Handle model selection with precedence:
-    # 1. GAC_MODEL (full provider:model)
-    if os.environ.get("GAC_MODEL"):
-        model = os.environ.get("GAC_MODEL")
+    # 1. UCL_MODEL (full provider:model)
+    if os.environ.get("UCL_MODEL"):
+        model = os.environ.get("UCL_MODEL")
         # Ensure model has provider prefix
         if ":" not in model:
             logger.warning(
-                f"GAC_MODEL '{model}' does not include provider prefix, assuming 'anthropic:'"
+                f"UCL_MODEL '{model}' does not include provider prefix, assuming 'anthropic:'"
             )
             model = f"anthropic:{model}"
         config["model"] = model
-        logger.debug(f"Using model from GAC_MODEL: {model}")
+        logger.debug(f"Using model from UCL_MODEL: {model}")
 
     # Handle formatting preference
-    if os.environ.get("GAC_USE_FORMATTING") is not None:
-        use_formatting = os.environ.get("GAC_USE_FORMATTING").lower() == "true"
+    if os.environ.get("UCL_USE_FORMATTING") is not None:
+        use_formatting = os.environ.get("UCL_USE_FORMATTING").lower() == "true"
         config["use_formatting"] = use_formatting
         logger.debug(f"Code formatting {'enabled' if use_formatting else 'disabled'}")
 
     # Handle token limit
-    if os.environ.get("GAC_MAX_TOKENS"):
+    if os.environ.get("UCL_MAX_TOKENS"):
         try:
             # Remove any comments and whitespace
-            max_tokens_value = os.environ.get("GAC_MAX_TOKENS").split("#", 1)[0].strip()
+            max_tokens_value = os.environ.get("UCL_MAX_TOKENS").split("#", 1)[0].strip()
             max_tokens = int(max_tokens_value)
-            if max_tokens < 1:
-                raise ValueError("GAC_MAX_TOKENS must be a positive integer")
+            if max_tokens <= 0:
+                raise ValueError("UCL_MAX_TOKENS must be a positive integer")
             config["max_output_tokens"] = max_tokens
-            logger.debug(f"Using max tokens: {max_tokens}")
-        except ValueError as e:
-            logger.warning(
-                f"Invalid GAC_MAX_TOKENS value: {max_tokens_value}. "
-                f"Using default: {config['max_output_tokens']}. Error: {str(e)}"
+            logger.debug(f"Using max tokens from UCL_MAX_TOKENS: {max_tokens}")
+        except ValueError:
+            logger.error(
+                f"Invalid UCL_MAX_TOKENS value: {max_tokens_value}. "
+                "Please provide a positive integer value."
             )
+            raise
 
     return config
 

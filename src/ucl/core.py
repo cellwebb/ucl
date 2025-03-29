@@ -24,10 +24,10 @@ import click
 from dotenv import load_dotenv
 from rich.logging import RichHandler
 
-from gac.ai_utils import chat, count_tokens
-from gac.config import get_config
-from gac.formatting.formatters import run_black, run_isort
-from gac.git import (
+from ucl.ai_utils import chat, count_tokens
+from ucl.config import get_config
+from ucl.formatting.formatters import run_black, run_isort
+from ucl.git import (
     commit_changes,
     get_existing_staged_python_files,
     get_project_description,
@@ -35,7 +35,7 @@ from gac.git import (
     get_staged_python_files,
     stage_files,
 )
-from gac.utils import run_subprocess
+from ucl.utils import run_subprocess
 
 load_dotenv()
 
@@ -177,7 +177,7 @@ def main(
 
     # Override model if specified
     if model:
-        os.environ["GAC_MODEL"] = model
+        os.environ["UCL_MODEL"] = model
 
     if add_all:
         stage_files(["."])
@@ -431,7 +431,7 @@ def cli(
 
     # If model option is provided, add to global config
     if model:
-        os.environ["GAC_MODEL"] = model
+        os.environ["UCL_MODEL"] = model
 
     # Run the main function with options
     main(

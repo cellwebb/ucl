@@ -114,7 +114,7 @@ python -m twine upload dist/*
 
 ## Version Management
 
-The project uses `bump2version` for version management. You can bump the version using the following make commands:
+The project uses a version management system. You can bump the version using the following make commands:
 
 ```console
 # Bump patch version (0.1.0 -> 0.1.1)

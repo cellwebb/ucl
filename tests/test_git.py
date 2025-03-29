@@ -1,10 +1,10 @@
-"""Test module for gac.git."""
+"""Test module for ucl.git."""
 
 import subprocess
 import unittest
 from unittest.mock import mock_open, patch
 
-from gac.git import (
+from ucl.git import (
     commit_changes,
     get_existing_staged_python_files,
     get_project_description,
@@ -17,7 +17,7 @@ from gac.git import (
 class TestGit(unittest.TestCase):
     """Tests for git functions."""
 
-    @patch("gac.git.run_subprocess")
+    @patch("ucl.git.run_subprocess")
     def test_get_staged_files(self, mock_run_subprocess):
         """Test get_staged_files returns correct result."""
         # Mock run_subprocess to return staged files with git status -s format
@@ -32,7 +32,7 @@ class TestGit(unittest.TestCase):
         # Assert result is list of files
         self.assertEqual(result, ["file1.py", "file2.md", "file3.js"])
 
-    @patch("gac.git.get_staged_files")
+    @patch("ucl.git.get_staged_files")
     def test_get_staged_python_files(self, mock_get_staged_files):
         """Test get_staged_python_files returns only Python files."""
         # Mock get_staged_files to return mixed file types
@@ -45,7 +45,7 @@ class TestGit(unittest.TestCase):
         self.assertEqual(result, ["file1.py", "file4.py"])
 
     @patch("os.path.exists")
-    @patch("gac.git.get_staged_python_files")
+    @patch("ucl.git.get_staged_python_files")
     def test_get_existing_staged_python_files(self, mock_get_staged_python_files, mock_exists):
         """Test get_existing_staged_python_files returns only existing Python files."""
         # Mock get_staged_python_files to return Python files
@@ -60,7 +60,7 @@ class TestGit(unittest.TestCase):
         # Assert only existing Python files are returned
         self.assertEqual(result, ["file1.py", "file3.py"])
 
-    @patch("gac.git.run_subprocess")
+    @patch("ucl.git.run_subprocess")
     def test_git_commit_changes(self, mock_run_subprocess):
         """Test commit_changes calls git commit with the provided message."""
         # Setup mock to avoid actual git command execution
@@ -78,7 +78,7 @@ class TestGit(unittest.TestCase):
         with self.assertRaises(ValueError):
             commit_changes("")
 
-    @patch("gac.git.run_subprocess")
+    @patch("ucl.git.run_subprocess")
     def test_commit_changes_failure(self, mock_run_subprocess):
         """Test commit_changes raises CalledProcessError when git commit fails."""
         # Setup mock to raise CalledProcessError
@@ -90,7 +90,7 @@ class TestGit(unittest.TestCase):
         with self.assertRaises(subprocess.CalledProcessError):
             commit_changes("Test commit message")
 
-    @patch("gac.git.run_subprocess")
+    @patch("ucl.git.run_subprocess")
     def test_stage_files(self, mock_run_subprocess):
         """Test stage_files calls git add with the provided files."""
         # Setup mock
@@ -111,7 +111,7 @@ class TestGit(unittest.TestCase):
         with self.assertRaises(ValueError):
             stage_files([])
 
-    @patch("gac.git.run_subprocess")
+    @patch("ucl.git.run_subprocess")
     def test_stage_files_failure(self, mock_run_subprocess):
         """Test stage_files returns False when git add fails."""
         # Setup mock to raise CalledProcessError
@@ -127,7 +127,7 @@ class TestGit(unittest.TestCase):
 
     @patch("os.path.exists")
     @patch("builtins.open", new_callable=mock_open, read_data="Project description from file")
-    @patch("gac.git.run_subprocess")
+    @patch("ucl.git.run_subprocess")
     def test_get_project_description(self, mock_run_subprocess, mock_file, mock_exists):
         """Test get_project_description returns repo name and description."""
         # Mock git commands to return expected values

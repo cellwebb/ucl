@@ -1,15 +1,15 @@
-"""Test module for gac.ai_utils."""
+"""Test module for ucl.ai_utils."""
 
 import unittest
 from unittest.mock import MagicMock, patch
 
-from gac.ai_utils import chat, count_tokens
+from ucl.ai_utils import chat, count_tokens
 
 
 class TestAiUtils(unittest.TestCase):
     """Tests for AI utility functions."""
 
-    @patch("gac.ai_utils.ai.Client")
+    @patch("ucl.ai_utils.ai.Client")
     def test_chat(self, mock_client_class):
         """Test chat function calls the AI client correctly."""
         mock_client = MagicMock()
@@ -40,7 +40,7 @@ class TestAiUtils(unittest.TestCase):
 
         self.assertEqual(result, "test_response")
 
-    @patch("gac.ai_utils.ai.Client")
+    @patch("ucl.ai_utils.ai.Client")
     def test_chat_with_system(self, mock_client_class):
         """Test chat function with system message."""
         mock_client = MagicMock()
@@ -63,7 +63,7 @@ class TestAiUtils(unittest.TestCase):
 
         self.assertEqual(result, "Test response")
 
-    @patch("gac.ai_utils.ai.Client")
+    @patch("ucl.ai_utils.ai.Client")
     @patch("builtins.open", new_callable=unittest.mock.mock_open)
     @patch("json.dump")
     def test_chat_save_conversation(self, mock_json_dump, mock_open, mock_client_class):

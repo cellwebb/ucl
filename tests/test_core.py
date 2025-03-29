@@ -1,16 +1,16 @@
-"""Test module for gac.core."""
+"""Test module for ucl.core."""
 
 import subprocess
 import unittest
 from unittest.mock import MagicMock, patch
 
-from gac.core import build_prompt, main, run_subprocess, send_to_llm
+from ucl.core import build_prompt, main, run_subprocess, send_to_llm
 
 
 class TestCore(unittest.TestCase):
     """Tests for core functions."""
 
-    @patch("gac.utils.subprocess.run")
+    @patch("ucl.utils.subprocess.run")
     def test_run_subprocess_success(self, mock_run):
         """Test run_subprocess when command succeeds."""
         # Mock subprocess.run to return a success result
@@ -33,7 +33,7 @@ class TestCore(unittest.TestCase):
         # Assert result matches mock stdout
         self.assertEqual(result, "Command output")
 
-    @patch("gac.utils.subprocess.run")
+    @patch("ucl.utils.subprocess.run")
     def test_run_subprocess_failure(self, mock_run):
         """Test run_subprocess when command fails."""
         # Mock subprocess.run to return a failure result
@@ -46,11 +46,11 @@ class TestCore(unittest.TestCase):
         with self.assertRaises(subprocess.CalledProcessError):
             run_subprocess(["git", "invalid"])
 
-    @patch("gac.core.get_config")
-    @patch("gac.core.get_staged_files")
-    @patch("gac.core.send_to_llm")
-    @patch("gac.core.commit_changes")
-    @patch("gac.core.run_subprocess")
+    @patch("ucl.core.get_config")
+    @patch("ucl.core.get_staged_files")
+    @patch("ucl.core.send_to_llm")
+    @patch("ucl.core.commit_changes")
+    @patch("ucl.core.run_subprocess")
     @patch("click.prompt")
     @patch("builtins.print")
     def test_main_no_formatting(
@@ -79,14 +79,14 @@ class TestCore(unittest.TestCase):
         mock_commit_changes.assert_called_once()
         self.assertEqual(result, "Generated commit message")
 
-    @patch("gac.core.get_config")
-    @patch("gac.core.get_staged_files")
-    @patch("gac.core.send_to_llm")
-    @patch("gac.core.commit_changes")
-    @patch("gac.core.run_subprocess")
+    @patch("ucl.core.get_config")
+    @patch("ucl.core.get_staged_files")
+    @patch("ucl.core.send_to_llm")
+    @patch("ucl.core.commit_changes")
+    @patch("ucl.core.run_subprocess")
     @patch("click.prompt")
     @patch("builtins.print")
-    @patch("gac.core.logging")
+    @patch("ucl.core.logging")
     def test_main_quiet_mode(
         self,
         mock_logging,
@@ -118,11 +118,11 @@ class TestCore(unittest.TestCase):
         mock_commit_changes.assert_called_once()
         self.assertEqual(result, "Generated commit message")
 
-    @patch("gac.core.get_config")
-    @patch("gac.core.get_staged_files")
-    @patch("gac.core.send_to_llm")
-    @patch("gac.core.commit_changes")
-    @patch("gac.core.run_subprocess")
+    @patch("ucl.core.get_config")
+    @patch("ucl.core.get_staged_files")
+    @patch("ucl.core.send_to_llm")
+    @patch("ucl.core.commit_changes")
+    @patch("ucl.core.run_subprocess")
     @patch("click.prompt")
     @patch("builtins.print")
     def test_main_verbose_mode(
@@ -152,11 +152,11 @@ class TestCore(unittest.TestCase):
         mock_commit_changes.assert_called_once()
         self.assertEqual(result, "Generated commit message")
 
-    @patch("gac.core.get_config")
-    @patch("gac.core.get_staged_files")
-    @patch("gac.core.send_to_llm")
-    @patch("gac.core.commit_changes")
-    @patch("gac.core.run_subprocess")
+    @patch("ucl.core.get_config")
+    @patch("ucl.core.get_staged_files")
+    @patch("ucl.core.send_to_llm")
+    @patch("ucl.core.commit_changes")
+    @patch("ucl.core.run_subprocess")
     @patch("click.prompt")
     @patch("builtins.print")
     def test_main_force_mode(
@@ -180,11 +180,11 @@ class TestCore(unittest.TestCase):
         mock_commit_changes.assert_called_once_with("Generated commit message")
         self.assertEqual(result, "Generated commit message")
 
-    @patch("gac.core.get_config")
-    @patch("gac.core.get_staged_files")
-    @patch("gac.core.send_to_llm")
-    @patch("gac.core.commit_changes")
-    @patch("gac.core.run_subprocess")
+    @patch("ucl.core.get_config")
+    @patch("ucl.core.get_staged_files")
+    @patch("ucl.core.send_to_llm")
+    @patch("ucl.core.commit_changes")
+    @patch("ucl.core.run_subprocess")
     @patch("click.prompt")
     @patch("builtins.print")
     def test_main_model_override(
@@ -204,22 +204,22 @@ class TestCore(unittest.TestCase):
         mock_prompt.return_value = "y"
 
         # Use patch.dict to mock os.environ
-        with patch.dict("gac.core.os.environ", {}, clear=True):
+        with patch.dict("ucl.core.os.environ", {}, clear=True):
             # Call main with model override
             result = main(model="openai:gpt-4")
 
             # Check that the model was set in the environment
-            from gac.core import os
+            from ucl.core import os
 
-            self.assertEqual(os.environ.get("GAC_MODEL"), "openai:gpt-4")
+            self.assertEqual(os.environ.get("UCL_MODEL"), "openai:gpt-4")
 
         self.assertEqual(result, "Generated commit message")
 
-    @patch("gac.core.get_config")
-    @patch("gac.core.get_staged_files")
-    @patch("gac.core.send_to_llm")
-    @patch("gac.core.commit_changes")
-    @patch("gac.core.run_subprocess")
+    @patch("ucl.core.get_config")
+    @patch("ucl.core.get_staged_files")
+    @patch("ucl.core.send_to_llm")
+    @patch("ucl.core.commit_changes")
+    @patch("ucl.core.run_subprocess")
     @patch("click.prompt")
     @patch("builtins.print")
     def test_main_add_all(
@@ -239,10 +239,10 @@ class TestCore(unittest.TestCase):
         mock_prompt.return_value = "y"
 
         # We need to mock the entire flow to avoid multiple stage_files calls
-        with patch("gac.core.stage_files") as mock_stage_files:
-            with patch("gac.core.get_staged_python_files") as mock_get_staged_python_files:
+        with patch("ucl.core.stage_files") as mock_stage_files:
+            with patch("ucl.core.get_staged_python_files") as mock_get_staged_python_files:
                 with patch(
-                    "gac.core.get_existing_staged_python_files"
+                    "ucl.core.get_existing_staged_python_files"
                 ) as mock_get_existing_staged_python_files:
                     mock_get_staged_python_files.return_value = []
                     mock_get_existing_staged_python_files.return_value = []
@@ -252,11 +252,11 @@ class TestCore(unittest.TestCase):
                     # Verify stage_files was called with ["."] for add_all
                     mock_stage_files.assert_any_call(["."])
 
-    @patch("gac.core.get_config")
-    @patch("gac.core.get_staged_files")
-    @patch("gac.core.send_to_llm")
-    @patch("gac.core.commit_changes")
-    @patch("gac.core.run_subprocess")
+    @patch("ucl.core.get_config")
+    @patch("ucl.core.get_staged_files")
+    @patch("ucl.core.send_to_llm")
+    @patch("ucl.core.commit_changes")
+    @patch("ucl.core.run_subprocess")
     @patch("click.prompt")
     @patch("builtins.print")
     def test_main_quiet_mode(
@@ -277,7 +277,7 @@ class TestCore(unittest.TestCase):
         mock_prompt.return_value = "y"
 
         # Mock logger to avoid actual logging calls
-        with patch("gac.core.logger") as mock_logger:
+        with patch("ucl.core.logger") as mock_logger:
             # Call main in quiet mode
             result = main(quiet=True)
 
@@ -288,11 +288,11 @@ class TestCore(unittest.TestCase):
             mock_commit_changes.assert_called_once()
             self.assertEqual(result, "Generated commit message")
 
-    @patch("gac.core.get_config")
-    @patch("gac.core.get_staged_files")
-    @patch("gac.core.send_to_llm")
-    @patch("gac.core.commit_changes")
-    @patch("gac.core.run_subprocess")
+    @patch("ucl.core.get_config")
+    @patch("ucl.core.get_staged_files")
+    @patch("ucl.core.send_to_llm")
+    @patch("ucl.core.commit_changes")
+    @patch("ucl.core.run_subprocess")
     @patch("click.prompt")
     @patch("builtins.print")
     def test_main_failed_llm(
@@ -314,10 +314,10 @@ class TestCore(unittest.TestCase):
         result = main()
         self.assertIsNone(result)
 
-    @patch("gac.core.get_config")
-    @patch("gac.core.get_staged_files")
-    @patch("gac.core.send_to_llm")
-    @patch("gac.core.commit_changes")
+    @patch("ucl.core.get_config")
+    @patch("ucl.core.get_staged_files")
+    @patch("ucl.core.send_to_llm")
+    @patch("ucl.core.commit_changes")
     @patch("click.prompt")
     @patch("builtins.print")
     def test_main_user_declines_commit(
@@ -339,9 +339,9 @@ class TestCore(unittest.TestCase):
         self.assertIsNone(result)
         mock_commit_changes.assert_not_called()
 
-    @patch("gac.core.get_config")
-    @patch("gac.core.chat")
-    @patch("gac.core.count_tokens")
+    @patch("ucl.core.get_config")
+    @patch("ucl.core.chat")
+    @patch("ucl.core.count_tokens")
     def test_send_to_llm(self, mock_count_tokens, mock_chat, mock_get_config):
         """Test send_to_llm function."""
         # Setup mocks
@@ -356,11 +356,11 @@ class TestCore(unittest.TestCase):
         mock_chat.assert_called_once()
         self.assertEqual(result, "Generated commit message")
 
-    @patch("gac.core.get_config")
-    @patch("gac.core.get_staged_files")
-    @patch("gac.core.send_to_llm")
-    @patch("gac.core.commit_changes")
-    @patch("gac.core.run_subprocess")
+    @patch("ucl.core.get_config")
+    @patch("ucl.core.get_staged_files")
+    @patch("ucl.core.send_to_llm")
+    @patch("ucl.core.commit_changes")
+    @patch("ucl.core.run_subprocess")
     @patch("click.prompt")
     @patch("builtins.print")
     def test_main_no_push(
@@ -393,8 +393,8 @@ class TestCore(unittest.TestCase):
         # Assert message was returned
         self.assertEqual(result, "Generated commit message")
 
-    @patch("gac.core.run_subprocess")
-    @patch("gac.core.get_staged_files")
+    @patch("ucl.core.run_subprocess")
+    @patch("ucl.core.get_staged_files")
     @patch("builtins.print")
     def test_main_test_mode(self, mock_print, mock_get_staged_files, mock_run_subprocess):
         """Test main function in test mode."""
@@ -415,10 +415,10 @@ class TestCore(unittest.TestCase):
         # Verify no subprocess calls for commit
         mock_run_subprocess.assert_not_called()
 
-    @patch("gac.core.run_subprocess")
-    @patch("gac.core.get_staged_files")
-    @patch("gac.core.build_prompt")
-    @patch("gac.core.count_tokens")
+    @patch("ucl.core.run_subprocess")
+    @patch("ucl.core.get_staged_files")
+    @patch("ucl.core.build_prompt")
+    @patch("ucl.core.count_tokens")
     @patch("builtins.print")
     def test_main_test_mode_with_real_diff(
         self,
@@ -461,8 +461,8 @@ class TestCore(unittest.TestCase):
         # Verify count_tokens was called
         mock_count_tokens.assert_called_once()
 
-    @patch("gac.core.run_subprocess")
-    @patch("gac.core.get_staged_files")
+    @patch("ucl.core.run_subprocess")
+    @patch("ucl.core.get_staged_files")
     @patch("builtins.print")
     def test_main_empty_stage_test_mode(
         self, mock_print, mock_get_staged_files, mock_run_subprocess

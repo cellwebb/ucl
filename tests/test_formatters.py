@@ -1,19 +1,19 @@
-"""Tests for gac.formatting.formatters module."""
+"""Tests for ucl.formatting.formatters module."""
 
 from unittest.mock import patch
 
 import pytest
 
-from gac.formatting.formatters import format_staged_files, run_black, run_isort
+from ucl.formatting.formatters import format_staged_files, run_black, run_isort
 
 
 @pytest.fixture
 def mock_get_staged_python_files():
-    with patch("gac.formatting.formatters.get_existing_staged_python_files") as mock:
+    with patch("ucl.formatting.formatters.get_existing_staged_python_files") as mock:
         yield mock
 
 
-@patch("gac.formatting.formatters.run_subprocess")
+@patch("ucl.formatting.formatters.run_subprocess")
 def test_run_black_success(mock_run_subprocess, mock_get_staged_python_files):
     mock_get_staged_python_files.return_value = ["file1.py", "file2.py"]
     mock_run_subprocess.return_value = None
@@ -22,7 +22,7 @@ def test_run_black_success(mock_run_subprocess, mock_get_staged_python_files):
     mock_run_subprocess.assert_called_once_with(["black", "file1.py", "file2.py"])
 
 
-@patch("gac.formatting.formatters.run_subprocess")
+@patch("ucl.formatting.formatters.run_subprocess")
 def test_run_black_no_files(mock_run_subprocess, mock_get_staged_python_files):
     mock_get_staged_python_files.return_value = []
     result = run_black()
@@ -30,7 +30,7 @@ def test_run_black_no_files(mock_run_subprocess, mock_get_staged_python_files):
     mock_run_subprocess.assert_not_called()
 
 
-@patch("gac.formatting.formatters.run_subprocess")
+@patch("ucl.formatting.formatters.run_subprocess")
 def test_run_isort_success(mock_run_subprocess, mock_get_staged_python_files):
     mock_get_staged_python_files.return_value = ["file1.py", "file2.py"]
     mock_run_subprocess.return_value = None
@@ -39,7 +39,7 @@ def test_run_isort_success(mock_run_subprocess, mock_get_staged_python_files):
     mock_run_subprocess.assert_called_once_with(["isort", "file1.py", "file2.py"])
 
 
-@patch("gac.formatting.formatters.run_subprocess")
+@patch("ucl.formatting.formatters.run_subprocess")
 def test_run_isort_no_files(mock_run_subprocess, mock_get_staged_python_files):
     mock_get_staged_python_files.return_value = []
     result = run_isort()
@@ -47,8 +47,8 @@ def test_run_isort_no_files(mock_run_subprocess, mock_get_staged_python_files):
     mock_run_subprocess.assert_not_called()
 
 
-@patch("gac.formatting.formatters.run_black")
-@patch("gac.formatting.formatters.run_isort")
+@patch("ucl.formatting.formatters.run_black")
+@patch("ucl.formatting.formatters.run_isort")
 def test_format_staged_files_success(mock_run_isort, mock_run_black, mock_get_staged_python_files):
     mock_get_staged_python_files.return_value = ["file1.py", "file2.py"]
     mock_run_black.return_value = True
@@ -59,8 +59,8 @@ def test_format_staged_files_success(mock_run_isort, mock_run_black, mock_get_st
     mock_run_isort.assert_called_once()
 
 
-@patch("gac.formatting.formatters.run_black")
-@patch("gac.formatting.formatters.run_isort")
+@patch("ucl.formatting.formatters.run_black")
+@patch("ucl.formatting.formatters.run_isort")
 def test_format_staged_files_no_files(mock_run_isort, mock_run_black, mock_get_staged_python_files):
     mock_get_staged_python_files.return_value = []
     result = format_staged_files()
@@ -69,8 +69,8 @@ def test_format_staged_files_no_files(mock_run_isort, mock_run_black, mock_get_s
     mock_run_isort.assert_not_called()
 
 
-@patch("gac.formatting.formatters.run_black")
-@patch("gac.formatting.formatters.run_isort")
+@patch("ucl.formatting.formatters.run_black")
+@patch("ucl.formatting.formatters.run_isort")
 def test_format_staged_files_black_fails(
     mock_run_isort, mock_run_black, mock_get_staged_python_files
 ):

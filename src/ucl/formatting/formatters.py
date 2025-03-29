@@ -7,8 +7,8 @@ It includes functions to format individual files or all staged Python files.
 import logging
 from typing import List
 
-from gac.git import get_existing_staged_python_files, get_staged_python_files, stage_files
-from gac.utils import run_subprocess
+from ucl.git import get_existing_staged_python_files, get_staged_python_files, stage_files
+from ucl.utils import run_subprocess
 
 logger = logging.getLogger(__name__)
 

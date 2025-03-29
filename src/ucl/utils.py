@@ -1,4 +1,4 @@
-"""Utility functions for the gac package."""
+"""Utility functions for the ucl package."""
 
 import logging
 import subprocess

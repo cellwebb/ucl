@@ -5,16 +5,18 @@ build-backend = "hatchling.build"
 [project]
 name = "ucl"
 dynamic = ["version"]
-description = 'update changelog'
+description = "update changelog"
 readme = "README.md"
 requires-python = ">=3.10"
-license = "MIT"
-keywords = []
+license = {file = "LICENSE"}
+keywords = ["changelog", "ai", "git"]
 authors = [
   { name = "cellwebb", email = "cellwebb@users.noreply.github.com" },
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -22,6 +24,8 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: Software Development :: Version Control",
+  "Topic :: Utilities"
 ]
 dependencies = [
     "aisuite>=0.1.7",
@@ -53,16 +57,29 @@ all = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/cellwebb/gac#readme"
-Issues = "https://github.com/cellwebb/gac/issues"
-Source = "https://github.com/cellwebb/gac"
+Documentation = "https://github.com/cellwebb/ucl#readme"
+Issues = "https://github.com/cellwebb/ucl/issues"
+Source = "https://github.com/cellwebb/ucl"
 
 [tool.black]
 line-length = 100
-target-version = ["py313"]
+target-version = ["py310", "py311", "py312", "py313"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/'''
 
 [tool.bump-my-version]
-current_version = "0.3.0"
+current_version = "0.1.0"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = ["{major}.{minor}.{patch}"]
 search = "{current_version}"
@@ -79,26 +96,26 @@ message = "Bump version: {current_version} → {new_version}"
 commit_args = ""
 
 [[tool.bump-my-version.files]]
-filename = "src/gac/__about__.py"
+filename = "src/ucl/__about__.py"
 search = '__version__ = "{current_version}"'
 replace = '__version__ = "{new_version}"'
 
 [[tool.bump-my-version.files]]
 filename = "pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
+search = 'current_version = "{current_version}"'
+replace = 'current_version = "{new_version}"'
 
 [tool.coverage.run]
-source_pkgs = ["gac", "tests"]
+source_pkgs = ["ucl", "tests"]
 branch = true
 parallel = true
 omit = [
-  "src/gac/__about__.py",
+  "src/ucl/__about__.py",
 ]
 
 [tool.coverage.paths]
-gac = ["src/gac", "*/gac/src/gac"]
-tests = ["tests", "*/gac/tests"]
+ucl = ["src/ucl", "*/ucl/src/ucl"]
+tests = ["tests", "*/ucl/tests"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -112,6 +129,11 @@ exclude_lines = [
   "raise ImportError",
   "except ImportError"
 ]
+show_missing = true
+skip_empty = true
+
+[tool.coverage.xml]
+output = "coverage.xml"
 
 [tool.flake8]
 max-line-length = 100
@@ -126,7 +148,7 @@ only-packages = true
 skip-excluded = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/gac"]
+packages = ["src/ucl"]
 
 [tool.hatch.build.targets.sdist]
 exclude = [
@@ -148,6 +170,7 @@ dependencies = [
     "codecov>=2.1.13",
     "flake8>=7.1.2",
     "pydantic>=2.10.6",
+    "mypy",
 ]
 
 [tool.hatch.envs.default.scripts]
@@ -162,6 +185,7 @@ format = [
     "black .",
     "isort .",
 ]
+type-check = "mypy src/ucl tests"
 
 [tool.hatch.env]
 path = ".venv"
@@ -176,7 +200,11 @@ ensure_newline_before_comments = true
 line_length = 100
 
 [tool.pytest.ini_options]
-addopts = "--no-cov"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = ["--cov=ucl", "--cov-report=term-missing"]
 
 [template.plugins.default]
 tests = true
