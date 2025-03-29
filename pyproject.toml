@@ -1,0 +1,183 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gac"
+dynamic = ["version"]
+description = 'git auto commit'
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "cellwebb", email = "cellwebb@users.noreply.github.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "aisuite>=0.1.7",
+    "black>=25.1.0",
+    "click>=8.1.8",
+    "docstring_parser>=0.16",
+    "isort>=6.0.1",
+    "python-dotenv>=1.1.0",
+    "rich>=13.9.4",
+    "pydantic>=2.10.6",
+]
+
+[project.scripts]
+gac = "gac.core:cli"
+
+[project.optional-dependencies]
+providers = [
+    "aisuite[anthropic,openai,groq,mistral]",
+]
+dev = [
+    "bump-my-version",
+    "codecov>=2.1.13",
+    "flake8>=7.1.2",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.0.0",
+]
+all = [
+    "aisuite[all]",
+]
+
+[project.urls]
+Documentation = "https://github.com/cellwebb/gac#readme"
+Issues = "https://github.com/cellwebb/gac/issues"
+Source = "https://github.com/cellwebb/gac"
+
+[tool.black]
+line-length = 100
+target-version = ["py313"]
+
+[tool.bump-my-version]
+current_version = "0.3.0"
+parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
+serialize = ["{major}.{minor}.{patch}"]
+search = "{current_version}"
+replace = "{new_version}"
+regex = false
+ignore_missing_version = false
+tag = true
+sign_tags = false
+tag_name = "v{new_version}"
+tag_message = "Bump version: {current_version} → {new_version}"
+allow_dirty = false
+commit = true
+message = "Bump version: {current_version} → {new_version}"
+commit_args = ""
+
+[[tool.bump-my-version.files]]
+filename = "src/gac/__about__.py"
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
+
+[[tool.bump-my-version.files]]
+filename = "pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[tool.coverage.run]
+source_pkgs = ["gac", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/gac/__about__.py",
+]
+
+[tool.coverage.paths]
+gac = ["src/gac", "*/gac/src/gac"]
+tests = ["tests", "*/gac/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+  "pragma: no cover",
+  "def __repr__",
+  "raise NotImplementedError",
+  "pass",
+  "raise ImportError",
+  "except ImportError"
+]
+
+[tool.flake8]
+max-line-length = 100
+exclude = [".git", "__pycache__", ".venv", "venv", "build", "dist"]
+per-file-ignores = { "__init__.py" = ["F401"], "tests/*.py" = ["E501"] }
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build]
+only-packages = true
+skip-excluded = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gac"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "/.github",
+    "/docs",
+    "tests/",
+    "*.tests",
+    "*.tests.*",
+]
+
+[tool.hatch.envs.default]
+dependencies = [
+    "aisuite[all]",
+    "black>=25.1.0",
+    "bump-my-version",
+    "isort>=6.0.1",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.0.0",
+    "codecov>=2.1.13",
+    "flake8>=7.1.2",
+    "pydantic>=2.10.6",
+]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests} && coverage report"
+lint = [
+    "black .",
+    "isort .",
+    "flake8 .",
+]
+format = [
+    "black .",
+    "isort .",
+]
+
+[tool.hatch.env]
+path = ".venv"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 100
+
+[tool.pytest.ini_options]
+addopts = "--no-cov"
+
+[template.plugins.default]
+tests = true
+src-layout = true
