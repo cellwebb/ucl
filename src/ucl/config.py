@@ -54,9 +54,14 @@ def get_config() -> Dict[str, Any]:
 
     # Handle formatting preference
     if os.environ.get("UCL_USE_FORMATTING") is not None:
-        use_formatting = os.environ.get("UCL_USE_FORMATTING").lower() == "true"
-        config["use_formatting"] = use_formatting
-        logger.debug(f"Code formatting {'enabled' if use_formatting else 'disabled'}")
+        use_formatting = os.environ.get("UCL_USE_FORMATTING").lower()
+        if use_formatting not in ["true", "false"]:
+            logger.warning(
+                f"Invalid UCL_USE_FORMATTING value: {use_formatting}. Using default: {DEFAULT_CONFIG['use_formatting']}"
+            )
+            use_formatting = str(DEFAULT_CONFIG["use_formatting"]).lower()
+        config["use_formatting"] = use_formatting == "true"
+        logger.debug(f"Code formatting {'enabled' if config['use_formatting'] else 'disabled'}")
 
     # Handle token limit
     if os.environ.get("UCL_MAX_TOKENS"):
@@ -65,15 +70,14 @@ def get_config() -> Dict[str, Any]:
             max_tokens_value = os.environ.get("UCL_MAX_TOKENS").split("#", 1)[0].strip()
             max_tokens = int(max_tokens_value)
             if max_tokens <= 0:
-                raise ValueError("UCL_MAX_TOKENS must be a positive integer")
+                raise ValueError("Token limit must be positive")
             config["max_output_tokens"] = max_tokens
-            logger.debug(f"Using max tokens from UCL_MAX_TOKENS: {max_tokens}")
+            logger.debug(f"Using max output tokens: {max_tokens}")
         except ValueError:
-            logger.error(
-                f"Invalid UCL_MAX_TOKENS value: {max_tokens_value}. "
-                "Please provide a positive integer value."
+            logger.warning(
+                f"Invalid UCL_MAX_TOKENS value: {max_tokens_value}. Using default: {DEFAULT_CONFIG['max_output_tokens']}"
             )
-            raise
+            config["max_output_tokens"] = DEFAULT_CONFIG["max_output_tokens"]
 
     return config
 

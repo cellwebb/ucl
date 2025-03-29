@@ -85,9 +85,7 @@ class TestConfig(unittest.TestCase):
         """Test that invalid UCL_USE_FORMATTING value defaults to True."""
         os.environ["UCL_USE_FORMATTING"] = "invalid"
         config = get_config()
-        self.assertFalse(
-            config["use_formatting"]
-        )  # Should be False because "invalid".lower() != "true"
+        self.assertTrue(config["use_formatting"])
 
     def test_ucl_max_tokens_valid(self):
         """Test that valid UCL_MAX_TOKENS value is used."""
@@ -96,7 +94,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(config["max_output_tokens"], 4096)
 
     def test_ucl_max_tokens_invalid(self):
-        """Test that invalid UCL_MAX_TOKENS value is ignored."""
+        """Test that invalid UCL_MAX_TOKENS value defaults to the default value."""
         os.environ["UCL_MAX_TOKENS"] = "not_a_number"
         config = get_config()
         self.assertEqual(config["max_output_tokens"], DEFAULT_CONFIG["max_output_tokens"])
