@@ -1,14 +1,14 @@
-# Development Guide for GAC
+# Development Guide for UCL
 
-This document contains instructions for developers who want to contribute to the GAC (Git Auto Commit) project.
+This document contains instructions for developers who want to contribute to the UCL (Update Changelog) project.
 
 ## Getting Started
 
 1. Clone the repository:
 
    ```console
-   git clone https://github.com/cellwebb/gac.git
-   cd gac
+   git clone https://github.com/cellwebb/ucl.git
+   cd ucl
    ```
 
 2. Set up with uv:
@@ -140,14 +140,14 @@ After bumping the version, be sure to update the CHANGELOG.md file with your cha
 
 ## Development Installation Options
 
-If you want to make the `gac` command available during development without having to activate the virtual environment each time, you have several options:
+If you want to make the `ucl` command available during development without having to activate the virtual environment each time, you have several options:
 
 ### Option 1: Use pipx in development mode
 
 This is a clean approach that keeps your development version isolated:
 
 ```bash
-pipx install -e /path/to/your/gac/repo
+pipx install -e /path/to/your/ucl/repo
 ```
 
 This will install your package in editable mode using pipx, which creates an isolated environment but makes the command globally available. Any changes you make to your code will be immediately reflected when you run the command.
@@ -157,17 +157,17 @@ This will install your package in editable mode using pipx, which creates an iso
 You can add an alias to your shell profile (`.zshrc`, `.bashrc`, etc.) that points to your development version:
 
 ```bash
-alias dev-gac="python /path/to/your/gac/repo/src/gac/core.py"
+alias dev-ucl="python /path/to/your/ucl/repo/src/ucl/core.py"
 ```
 
-This would let you run `dev-gac` from anywhere, and it would use your current code.
+This would let you run `dev-ucl` from anywhere, and it would use your current code.
 
 ### Option 3: Add a symbolic link to your PATH
 
 1. First, make sure your script is executable:
 
    ```bash
-   chmod +x /path/to/your/gac/repo/src/gac/core.py
+   chmod +x /path/to/your/ucl/repo/src/ucl/core.py
    ```
 
 2. Add a shebang line to the top of your core.py file if it doesn't have one:
@@ -179,15 +179,15 @@ This would let you run `dev-gac` from anywhere, and it would use your current co
 3. Create a symbolic link in a directory that's in your PATH:
 
    ```bash
-   ln -s /path/to/your/gac/repo/src/gac/core.py /usr/local/bin/dev-gac
+   ln -s /path/to/your/ucl/repo/src/ucl/core.py /usr/local/bin/dev-ucl
    ```
 
 ## Project Structure
 
 ```plaintext
-gac/
+ucl/
 ├── src/
-│   └── gac/
+│   └── ucl/
 │       ├── __init__.py
 │       ├── __about__.py
 │       ├── core.py

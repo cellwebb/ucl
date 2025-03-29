@@ -1,26 +1,26 @@
-# gac (Git Auto Commit)
+# ucl (Update Changelog)
 
-[![Tests](https://github.com/cellwebb/gac/actions/workflows/ci.yml/badge.svg)](https://github.com/cellwebb/gac/actions/workflows/ci.yml)
-[![Code Coverage](https://codecov.io/gh/cellwebb/gac/graph/badge.svg?token=WXOSX7R2JH)](https://codecov.io/gh/cellwebb/gac)
-[![PyPI - Version](https://img.shields.io/pypi/v/gac.svg)](https://pypi.org/project/gac)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/gac.svg)](https://pypi.org/project/gac)
+[![Tests](https://github.com/cellwebb/ucl/actions/workflows/ci.yml/badge.svg)](https://github.com/cellwebb/ucl/actions/workflows/ci.yml)
+[![Code Coverage](https://codecov.io/gh/cellwebb/ucl/graph/badge.svg?token=WXOSX7R2JH)](https://codecov.io/gh/cellwebb/ucl)
+[![PyPI - Version](https://img.shields.io/pypi/v/ucl.svg)](https://pypi.org/project/ucl)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ucl.svg)](https://pypi.org/project/ucl)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A CLI tool (pronounced like "gak") that uses large language models to generate meaningful commit messages based on your staged changes.
+A CLI tool (pronounced like "you see ell") that uses large language models to generate and update changelog entries based on your git commits.
 
 ## Features
 
-- Automatically generates meaningful commit messages using various LLM providers
+- Automatically generates meaningful changelog entries using various LLM providers
 - Supports multiple AI providers (Anthropic Claude, OpenAI, Groq, Mistral, and more)
-- Formats Python files with `black` and `isort` before committing
-- Interactive prompts for commit and push actions
+- Formats changelog entries in a standardized format
+- Interactive prompts for changelog generation and editing
 - Supports various flags for different workflows
 
 ## Installation
 
 ```console
-pipx install gac
+pipx install ucl
 ```
 
 ## Configuration
@@ -51,51 +51,45 @@ You can specify which LLM provider and model to use:
 
 ```console
 # Set provider (anthropic, openai, groq, mistral, aws, etc.)
-export GAC_PROVIDER=anthropic
+export UCL_PROVIDER=anthropic
 
 # Optionally, set a specific model name for the provider
-export GAC_MODEL_NAME=claude-3-5-sonnet-20240620
+export UCL_MODEL_NAME=claude-3-5-sonnet-20240620
 
 # Or set a fully qualified model
-export GAC_MODEL=openai:gpt-4o
+export UCL_MODEL=openai:gpt-4o
 ```
 
 ## Usage
 
 ### Basic Usage
 
-Stage your changes as usual with git:
+Run ucl to generate changelog entries based on your recent commits:
 
 ```console
-git add <files>
-```
-
-Then use `gac` to commit:
-
-```console
-gac
+ucl
 ```
 
 ### Command Line Options
 
-- `--test`: Run in test mode with example commit messages
+- `--test`: Run in test mode with example changelog entries
 - `--force, -f`: Skip all prompts (auto-yes)
-- `--add-all, -a`: Stage all changes before committing
-- `--no-format, -nf`: Disable automatic code formatting
+- `--edit, -e`: Open generated changelog entries in your default editor
+- `--format, -F`: Format existing changelog entries
 
 Example:
 
 ```console
-# Stage and commit all changes without prompts
-gac -f -a
+# Generate changelog entries without prompts
+ucl -f
 ```
 
 ## Project Structure
 
 ```plaintext
-gac/
+ucl/
 ├── src/
-│   └── gac/
+│   └── ucl/
 │       ├── __init__.py
 │       ├── core.py
 │       └── utils.py

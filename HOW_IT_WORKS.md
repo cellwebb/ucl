@@ -1,16 +1,15 @@
-# How GAC Works
+# How UCL Works
 
-This document explains the internal architecture of GAC and how it generates commit messages using various AI providers.
+This document explains the internal architecture of UCL and how it generates changelog entries using various AI providers.
 
 ## Overview
 
-GAC (Git Auto Commit) streamlines the Git commit process by:
+UCL (Update Changelog) streamlines the changelog generation process by:
 
-1. Analyzing your staged changes
-2. Generating a commit message using an AI provider
-3. Formatting code if needed
-4. Committing the changes
-5. Optionally pushing to the remote repository
+1. Analyzing your recent commits
+2. Generating changelog entries using an AI provider
+3. Formatting changelog entries in a standardized format
+4. Optionally editing entries in your default editor
 
 ## Component Architecture
 
@@ -19,7 +18,7 @@ GAC (Git Auto Commit) streamlines the Git commit process by:
 1. **Command Line Interface (core.py)**
 
    - Handles command-line arguments and orchestrates the workflow
-   - Interacts with Git to get staged changes
+   - Interacts with Git to get commit history
    - Handles user interaction
 
 2. **AI Integration (utils.py)**
@@ -33,44 +32,32 @@ GAC (Git Auto Commit) streamlines the Git commit process by:
    - Manages default settings and environment variables
    - Supports different AI providers and models
 
-4. **Formatting Tools**
-   - Integrates with black and isort for Python file formatting
-
 ## The Workflow
 
 ### 1. Initialization
 
-When you run `gac`, the tool:
+When you run `ucl`, the tool:
 
 - Loads configuration from environment variables and .env file
 - Processes command-line arguments
-- Checks for staged files
+- Checks for recent commits
 
-### 2. Code Formatting (Optional)
-
-If enabled and Python files are staged:
-
-- Runs `black` on the Python files
-- Runs `isort` on the Python files
-- Re-stages the formatted files
-
-### 3. Generating Commit Messages
+### 2. Generating Changelog Entries
 
 The tool:
 
-- Gets the staged diff using `git diff --staged`
-- Gets the current status using `git status`
+- Gets the commit history using `git log`
 - Creates a prompt for the AI model
 - Sends the prompt to the configured AI provider
-- Receives a structured commit message
+- Receives structured changelog entries
 
-### 4. Multi-Provider Support
+### 3. Multi-Provider Support
 
-GAC uses the aisuite library to abstract away provider-specific details:
+UCL uses the aisuite library to abstract away provider-specific details:
 
 1. **Provider Selection**
 
-   - Set by `GAC_PROVIDER` environment variable or `--model` flag
+   - Set by `UCL_PROVIDER` environment variable or `--model` flag
    - Each provider needs its own API key
 
 2. **Model Selection**
@@ -79,27 +66,27 @@ GAC uses the aisuite library to abstract away provider-specific details:
    - Models are referenced using the format `provider:model_name`
    - Default models are defined in `PROVIDER_MODELS` in config.py
 
-3. **Message Generation**
+3. **Entry Generation**
    - The actual AI request is handled by aisuite
    - The prompt template is standardized across providers
    - Token counting ensures requests stay within limits
 
-### 5. Committing Changes
+### 4. Changelog Management
 
-After generating a message:
+After generating entries:
 
-- The tool displays the suggested commit message
-- The user can accept or reject the message
-- If accepted, the tool commits the changes using `git commit`
-- Optionally pushes the changes using `git push`
+- The tool displays the suggested changelog entries
+- The user can accept or reject the entries
+- If accepted, the tool updates the changelog file
+- Optionally opens the entries in your default editor for manual editing
 
 ## Provider Selection Logic
 
 The logic for selecting a provider and model follows this precedence:
 
 1. Command-line argument (`--model` or `-m`)
-2. Environment variable `GAC_MODEL` (fully qualified model)
-3. Environment variables `GAC_PROVIDER` and `GAC_MODEL_NAME`
+2. Environment variable `UCL_MODEL` (fully qualified model)
+3. Environment variables `UCL_PROVIDER` and `UCL_MODEL_NAME`
 4. Default configuration (Anthropic Claude)
 
 This allows for flexible usage patterns, from project-wide configuration to one-off overrides.
@@ -109,7 +96,7 @@ This allows for flexible usage patterns, from project-wide configuration to one-
 ### Anthropic Claude (Default)
 
 - Good at understanding code context
-- Produces well-structured commit messages
+- Produces well-structured changelog entries
 - API charges per token
 - Default model: claude-3-haiku
 
@@ -150,10 +137,10 @@ This allows for flexible usage patterns, from project-wide configuration to one-
 
 ## Prompt Engineering
 
-GAC uses a specific prompt format to guide the AI:
+UCL uses a specific prompt format to guide the AI:
 
 ```text
-Analyze this git status and git diff and write ONLY a commit message in the following format. Do not include any other text, explanation, or commentary.
+Analyze this git log and write ONLY a changelog entry in the following format. Do not include any other text, explanation, or commentary.
 
 Format:
 [type]: Short summary of changes (50 chars or less)
@@ -162,22 +149,19 @@ Format:
 
 [feat/fix/docs/refactor/test/chore/other]: <description>
 
-Git Status:
-...
-
-Git Diff:
+Git Log:
 ...
 ```
 
 This prompt:
 
 - Provides clear instructions on the desired output format
-- Includes both the Git status and diff for context
-- Encourages structured, conventional commit messages
+- Includes the Git log for context
+- Encourages structured, conventional changelog entries
 
 ## Behind the Scenes: Token Management
 
-GAC includes token counting functionality to:
+UCL includes token counting functionality to:
 
 1. Estimate prompt size before sending
 2. Log token usage for monitoring
@@ -187,7 +171,7 @@ The token counting is provider-agnostic thanks to aisuite's abstraction layer.
 
 ## Environment Variables
 
-GAC uses the following environment variables:
+UCL uses the following environment variables:
 
 | Variable             | Description       | Example                    |
 | -------------------- | ----------------- | -------------------------- |
@@ -195,15 +179,15 @@ GAC uses the following environment variables:
 | `OPENAI_API_KEY`     | OpenAI API key    | `sk-...`                   |
 | `GROQ_API_KEY`       | Groq API key      | `gsk_...`                  |
 | `MISTRAL_API_KEY`    | Mistral API key   | `...`                      |
-| `GAC_PROVIDER`       | Provider to use   | `anthropic`                |
-| `GAC_MODEL_NAME`     | Model name        | `claude-3-haiku`           |
-| `GAC_MODEL`          | Full model ID     | `anthropic:claude-3-haiku` |
-| `GAC_USE_FORMATTING` | Enable formatting | `true`                     |
-| `GAC_MAX_TOKENS`     | Max output tokens | `8192`                     |
+| `UCL_PROVIDER`       | Provider to use   | `anthropic`                |
+| `UCL_MODEL_NAME`     | Model name        | `claude-3-haiku`           |
+| `UCL_MODEL`          | Full model ID     | `anthropic:claude-3-haiku` |
+| `UCL_USE_FORMATTING` | Enable formatting | `true`                     |
+| `UCL_MAX_TOKENS`     | Max output tokens | `8192`                     |
 
-## Extending GAC
+## Extending UCL
 
-GAC can be extended to support additional providers by:
+UCL can be extended to support additional providers by:
 
 1. Adding the provider to `PROVIDER_MODELS` in config.py
 2. Ensuring aisuite supports the provider

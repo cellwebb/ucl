@@ -1,13 +1,13 @@
 # Installation Guide
 
-This guide provides instructions for installing and configuring GAC (Git Auto Commit) with support for multiple AI providers.
+This guide provides instructions for installing and configuring UCL (Update Changelog) with support for multiple AI providers.
 
 ## Quick Start
 
-1. Install GAC:
+1. Install UCL:
 
    ```bash
-   pipx install gac
+   pipx install ucl
    ```
 
 2. Set up at least one AI provider (Anthropic Claude is the default):
@@ -16,14 +16,11 @@ This guide provides instructions for installing and configuring GAC (Git Auto Co
    export ANTHROPIC_API_KEY=your_api_key_here
    ```
 
-3. Start using GAC:
+3. Start using UCL:
 
    ```bash
-   # Stage your changes
-   git add .
-
-   # Generate and apply a commit message
-   gac
+   # Generate changelog entries from recent commits
+   ucl
    ```
 
 ## Installation Methods
@@ -50,26 +47,26 @@ This guide provides instructions for installing and configuring GAC (Git Auto Co
    pipx ensurepath
    ```
 
-2. Install GAC:
+2. Install UCL:
 
    ```bash
-   pipx install gac
+   pipx install ucl
    ```
 
 3. Verify installation:
 
    ```bash
-   gac --help
+   ucl --help
    ```
 
 ### Alternative: Install with pip
 
 ```bash
 # Standard installation
-pip install gac
+pip install ucl
 
 # Or user installation
-pip install --user gac
+pip install --user ucl
 ```
 
 ### Install from Source
@@ -78,8 +75,8 @@ For developers or to get the latest changes:
 
 ```bash
 # Clone the repository
-git clone https://github.com/cellwebb/gac.git
-cd gac
+git clone https://github.com/cellwebb/ucl.git
+cd ucl
 
 # Install in development mode
 pip install -e .
@@ -87,7 +84,7 @@ pip install -e .
 
 ## AI Provider Setup
 
-GAC supports multiple AI providers. You need to set up at least one:
+UCL supports multiple AI providers. You need to set up at least one:
 
 ### Anthropic Claude (Default)
 
@@ -142,12 +139,11 @@ export ANTHROPIC_API_KEY=your_api_key_here
 # export GROQ_API_KEY=your_api_key_here
 # export MISTRAL_API_KEY=your_api_key_here
 
-# GAC Configuration
-export GAC_PROVIDER=anthropic  # Choose: anthropic, openai, groq, mistral, aws
-# export GAC_MODEL_NAME=claude-3-haiku  # Model name for the selected provider
-# export GAC_MODEL=openai:gpt-4o  # Or set a fully qualified model (overrides provider and model name)
-# export GAC_USE_FORMATTING=true  # Whether to use black and isort for Python files
-# export GAC_MAX_TOKENS=8192  # Maximum output tokens
+# UCL Configuration
+export UCL_PROVIDER=anthropic  # Choose: anthropic, openai, groq, mistral, aws
+# export UCL_MODEL_NAME=claude-3-haiku  # Model name for the selected provider
+# export UCL_MODEL=openai:gpt-4o  # Or set a fully qualified model (overrides provider and model name)
+# export UCL_MAX_TOKENS=8192  # Maximum output tokens
 ```
 
 ### Using .env Files
@@ -159,37 +155,28 @@ Alternatively, create a `.env` file in your project directory with the same vari
 Override the model for a single run:
 
 ```bash
-gac -m openai:gpt-4o
+ucl -m openai:gpt-4o
 ```
 
 ## Basic Usage
 
-1. Stage your changes:
+1. Generate changelog entries:
 
    ```bash
-   git add <files>
+   ucl
    ```
 
-2. Generate and apply a commit message:
+2. Additional options:
 
    ```bash
-   gac
-   ```
+   # Generate entries without prompts
+   ucl -f
 
-3. Additional options:
-
-   ```bash
-   # Stage all changes and commit
-   gac -a
-
-   # Skip user confirmation
-   gac -f
-
-   # Skip code formatting
-   gac -nf
+   # Format existing changelog entries
+   ucl -F
 
    # Use a specific model
-   gac -m groq:llama3-70b-8192
+   ucl -m groq:llama3-70b-8192
    ```
 
 ## Troubleshooting
@@ -206,7 +193,7 @@ gac -m openai:gpt-4o
 
 2. **Command Not Found**
 
-   If the `gac` command isn't found:
+   If the `ucl` command isn't found:
 
    - Ensure the Python bin directory is in your PATH
    - Try installing with `pipx` instead of `pip`
@@ -221,7 +208,7 @@ gac -m openai:gpt-4o
    If you encounter dependency errors:
 
    ```bash
-   pip install --upgrade 'gac[all]'
+   pip install --upgrade 'ucl[all]'
    ```
 
 4. **Model Not Found**
@@ -236,12 +223,12 @@ gac -m openai:gpt-4o
 
 If you continue to experience issues:
 
-1. Run GAC in verbose mode for more information:
+1. Run UCL in verbose mode for more information:
 
    ```bash
-   gac -v
+   ucl -v
    ```
 
-2. Check the [GitHub issues](https://github.com/cellwebb/gac/issues) for similar problems and solutions
+2. Check the [GitHub issues](https://github.com/cellwebb/ucl/issues) for similar problems and solutions
 
 3. Open a new issue with the error details and steps to reproduce
