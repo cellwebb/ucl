@@ -41,9 +41,20 @@ def run_subprocess(command: List[str]) -> str:
     return result.stdout.strip()
 
 
-def get_latest_tag() -> str:
-    """Get the latest version tag."""
-    return run_subprocess(["git", "describe", "--tags", "--abbrev=0"])
+def get_current_version() -> str:
+    """Get the current version from pyproject.toml."""
+    with open("pyproject.toml", "r") as f:
+        content = f.read()
+    match = re.search(r"version = \"([0-9.]+)\"", content)
+    if not match:
+        raise ValueError("Could not find version in pyproject.toml")
+    return match.group(1)
+
+
+def get_next_version(current_version: str) -> str:
+    """Get the next version by incrementing the patch number."""
+    major, minor, patch = map(int, current_version.split("."))
+    return f"{major}.{minor}.{patch + 1}"
 
 
 def check_for_uncommitted_changes() -> bool:
@@ -111,14 +122,11 @@ def main(
                 return
             logger.info("All tests passed successfully!")
 
-        # Get the latest tag
-        latest_tag = get_latest_tag()
-        if not latest_tag:
-            logger.error("No version tags found. Please create an initial version tag.")
-            return
+        # Get current version and calculate next version
+        current_version = get_current_version()
+        new_version = get_next_version(current_version)
 
         # Update version files
-        new_version = f"v{latest_tag.split('v')[-1]}"  # Remove 'v' prefix if present
         if not test_mode:
             update_version_files(new_version)
             run_subprocess(["git", "add", "src/ucl/__about__.py"])
@@ -127,7 +135,7 @@ def main(
 
         # Create and push tag
         if not test_mode:
-            create_and_push_tag(new_version)
+            create_and_push_tag(f"v{new_version}")
 
         logger.info(f"Successfully released version {new_version}")
 
